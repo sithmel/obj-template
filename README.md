@@ -3,6 +3,7 @@
 You run:
 ```js
 var objTemplate = require('obj-template');
+
 var config = {
   baseURL: 'http://www.example.com',
   urls: [
@@ -27,3 +28,21 @@ and it returns a new object (it is a deep clone of the original object):
 }
 ```
 It can be useful to write short configuration objects, without being too repetitive.
+
+objTemplate uses as default lodash "template" function. It can also take any equivalent function as second argument:
+
+```js
+var handlebars = require('handlebars');
+var objTemplate = require('obj-template');
+
+var config = {
+  baseURL: 'http://www.example.com',
+  urls: [
+    "{{baseURL}}/homepage",
+    "{{baseURL}}/menu",
+    "{{baseURL}}/contacts"
+  ]
+};
+
+var newConfig = objTemplate(config, handlebars.compile);
+```
