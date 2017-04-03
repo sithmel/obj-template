@@ -64,4 +64,39 @@ describe('objTemplate', function () {
       ]
     });
   });
+
+  it('uses the scope', function () {
+    var o1 = {
+      fruit: 'apple',
+      value: '1',
+      test1: {
+        value: '3',
+        sentence: 'eating <%= value %> <%= fruit %>'
+      },
+      test2: {
+        fruit: 'orange',
+        sentence: 'eating <%= value %> <%= fruit %>'
+      },
+      test3: {
+        sentence: 'eating <%= value %> <%= fruit %>'
+      }
+    };
+    var o2 = objTemplate(o1);
+
+    assert.deepEqual(o2, {
+      fruit: 'apple',
+      value: '1',
+      test1: {
+        value: '3',
+        sentence: 'eating 3 apple'
+      },
+      test2: {
+        fruit: 'orange',
+        sentence: 'eating 1 orange'
+      },
+      test3: {
+        sentence: 'eating 1 apple'
+      }
+    });
+  });
 });
