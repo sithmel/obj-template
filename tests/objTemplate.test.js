@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var objTemplate = require('../index.js');
+var objTemplate = require('../lib/objTemplate.js');
 
 describe('objTemplate', function () {
   it('returns new object', function () {
