@@ -65,7 +65,7 @@ describe('objTemplate', function () {
     });
   });
 
-  it('uses the scope', function () {
+  it('uses the scope and stack', function () {
     var o1 = {
       fruit: 'apple',
       value: '1',
@@ -75,7 +75,8 @@ describe('objTemplate', function () {
       },
       test2: {
         fruit: 'orange',
-        sentence: 'eating <%= value %> <%= fruit %>'
+        sentence: 'eating <%= value %> <%= fruit %>',
+        breadcrumbs: '<%= _stack.map(function (o) { return o.fruit; }).join(", ") %>'
       },
       test3: {
         sentence: 'eating <%= value %> <%= fruit %>'
@@ -92,11 +93,96 @@ describe('objTemplate', function () {
       },
       test2: {
         fruit: 'orange',
-        sentence: 'eating 1 orange'
+        sentence: 'eating 1 orange',
+        breadcrumbs: 'apple, orange'
       },
       test3: {
         sentence: 'eating 1 apple'
       }
     });
+  });
+
+  it('uses the scope (field itself corner case)', function () {
+    var o1 = {
+      url: 'http://www.example.com',
+      items: [
+        {
+          title: 'Section1',
+          url: '<%= url %>/section1',
+          navigation: [
+            "<%= url %>/homepage",
+            "<%= url %>/menu",
+            "<%= url %>/contacts"
+          ]
+        },
+        {
+          title: 'Section2',
+          navigation: [
+            "<%= url %>/homepage",
+            "<%= url %>/menu",
+            "<%= url %>/contacts"
+          ]
+        }
+      ]
+    };
+    var o2 = objTemplate(o1);
+
+    assert.deepEqual(o2, {
+      url: 'http://www.example.com',
+      items: [
+        {
+          title: 'Section1',
+          url: 'http://www.example.com/section1',
+          navigation: [
+            "http://www.example.com/section1/homepage",
+            "http://www.example.com/section1/menu",
+            "http://www.example.com/section1/contacts"
+          ]
+        },
+        {
+          title: 'Section2',
+          navigation: [
+            "http://www.example.com/homepage",
+            "http://www.example.com/menu",
+            "http://www.example.com/contacts"
+          ]
+        }
+      ]
+    });
+  });
+
+  describe('current obj precedence', function () {
+    it('precedence 1', function () {
+      var o1 = {
+        a: 'test',
+        b: '<%= a %>',
+        c: '<%= b %>'
+      };
+
+      var o2 = objTemplate(o1);
+
+      assert.deepEqual(o2, {
+        a: 'test',
+        b: 'test',
+        c: 'test'
+      });
+    });
+
+    it('precedence 2', function () {
+      var o1 = {
+        c: 'test',
+        b: '<%= c %>',
+        a: '<%= b %>'
+      };
+
+      var o2 = objTemplate(o1);
+
+      assert.deepEqual(o2, {
+        a: 'test',
+        b: 'test',
+        c: 'test'
+      });
+    });
+
   });
 });

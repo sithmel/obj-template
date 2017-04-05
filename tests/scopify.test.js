@@ -17,6 +17,6 @@ describe('scopify', function () {
   it('returns empty object', function () {
     var stack = [];
     var o = scopify(stack);
-    assert.deepEqual(o, {});
+    assert.deepEqual(o, { _stack: stack });
   });
 });
