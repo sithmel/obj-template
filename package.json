@@ -1,6 +1,6 @@
 {
   "name": "obj-template",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Return a new object treating strings as templates",
   "main": "index.js",
   "scripts": {
