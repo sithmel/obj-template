@@ -9,6 +9,12 @@ describe('objTemplate', function () {
     assert.deepEqual(o1, o2);
   });
 
+  it('does not clone the object', function () {
+    var o1 = {};
+    var o2 = objTemplate(o1, { dontclone: true });
+    assert.equal(o1, o2);
+  });
+
   it('returns new object (check deep)', function () {
     var o1 = {
       a: {},
@@ -28,6 +34,18 @@ describe('objTemplate', function () {
     };
     var o2 = objTemplate(o1);
     assert.deepEqual(o2, {
+      a: 'hello',
+      b: 'hello world!'
+    });
+  });
+
+  it('replace values (dontclone)', function () {
+    var o1 = {
+      a: 'hello',
+      b: '<%= a %> world!'
+    };
+    objTemplate(o1, { dontclone: true });
+    assert.deepEqual(o1, {
       a: 'hello',
       b: 'hello world!'
     });

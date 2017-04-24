@@ -29,7 +29,7 @@ and it returns a new object (it is a deep clone of the original object):
 ```
 It can be useful to write short configuration objects, without being too repetitive.
 
-objTemplate uses as default lodash "template" function. It can also take any equivalent function as second argument:
+objTemplate uses as default lodash "template" function. It can also take any equivalent function as a templateFunc in the options (the second argument):
 
 ```js
 var handlebars = require('handlebars');
@@ -44,7 +44,7 @@ var config = {
   ]
 };
 
-var newConfig = objTemplate(config, handlebars.compile);
+var newConfig = objTemplate(config, { templateFunc: handlebars.compile });
 ```
 
 ### Scope
@@ -144,4 +144,14 @@ returns:
     breadcrumbs: 'apple, orange'
   }
 }
+```
+
+### dontclone
+The function returns a new object, deep cloned from the original one. If you prefer to modify the original object you can pass "dontclone: true" in the options.
+```js
+var obj = {
+  a : 'test',
+  b: '<%= a %>'
+};
+objTemplate(obj, { dontclone: true });
 ```
