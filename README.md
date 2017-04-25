@@ -46,6 +46,28 @@ var config = {
 
 var newConfig = objTemplate(config, { templateFunc: handlebars.compile });
 ```
+###isTemplate
+Before converting a string to a template, the function checks if the string is a template. If you changed the templateFunc, you should also implement a function "isTemplate" that returns true if a string is a template.
+```js
+var handlebars = require('handlebars');
+var objTemplate = require('obj-template');
+
+function isHandlebars(s) {
+  var re = new RegExp('{{.+}}');
+  return !!re.exec(s);
+}
+
+var config = {
+  baseURL: 'http://www.example.com',
+  urls: [
+    "{{baseURL}}/homepage",
+    "{{baseURL}}/menu",
+    "{{baseURL}}/contacts"
+  ]
+};
+
+var newConfig = objTemplate(config, { templateFunc: handlebars.compile, isTemplate: isHandlebars });
+```
 
 ### Scope
 Every value is contained in a scope related to the object where is defined:
@@ -155,3 +177,15 @@ var obj = {
 };
 objTemplate(obj, { dontclone: true });
 ```
+
+### templateCache
+This options inject a cache used for the templates. We have verified it can greatly increase the speed calling the function multiple times on a object containing the same strings (using handlebars for example).
+```js
+var obj = {
+  a : 'test',
+  b: '<%= a %>'
+};
+var templateCache = {};
+objTemplate(obj, { templateCache: {} });
+```
+If you are not using the default templating engine (lodash template), to avoid unnecessary caching you should also pass a function "isTemplate" that returns true if a string is a template.

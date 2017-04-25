@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
 var objTemplate = require('../lib/objTemplate.js');
+var handlebars = require('handlebars');
 
 describe('objTemplate', function () {
   it('returns new object', function () {
@@ -39,6 +40,32 @@ describe('objTemplate', function () {
     });
   });
 
+  it('replace values using different template engines', function () {
+    var o1 = {
+      a: 'hello',
+      b: '{{a}} world!'
+    };
+    var o2 = objTemplate(o1, { templateFunc: handlebars.compile });
+    assert.deepEqual(o2, {
+      a: 'hello',
+      b: 'hello world!'
+    });
+  });
+
+  it('replace values using different template engines and isTemplate', function () {
+    var o1 = {
+      a: 'hello',
+      b: '{{a}} world!',
+      c: '-{{b}} do not render'
+    };
+    var o2 = objTemplate(o1, { templateFunc: handlebars.compile, isTemplate: function (s) { return s[0] !== '-'; } });
+    assert.deepEqual(o2, {
+      a: 'hello',
+      b: 'hello world!',
+      c: '-{{b}} do not render'
+    });
+  });
+
   it('replace values (dontclone)', function () {
     var o1 = {
       a: 'hello',
@@ -46,6 +73,18 @@ describe('objTemplate', function () {
     };
     objTemplate(o1, { dontclone: true });
     assert.deepEqual(o1, {
+      a: 'hello',
+      b: 'hello world!'
+    });
+  });
+
+  it('replace values caching templates', function () {
+    var o1 = {
+      a: 'hello',
+      b: '<%= a %> world!'
+    };
+    var o2 = objTemplate(o1, { templateCache: {} });
+    assert.deepEqual(o2, {
       a: 'hello',
       b: 'hello world!'
     });
