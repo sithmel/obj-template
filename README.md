@@ -46,7 +46,7 @@ var config = {
 
 var newConfig = objTemplate(config, { templateFunc: handlebars.compile });
 ```
-###isTemplate
+### isTemplate
 Before converting a string to a template, the function checks if the string is a template. If you changed the templateFunc, you should also implement a function "isTemplate" that returns true if a string is a template.
 ```js
 var handlebars = require('handlebars');
